@@ -2,10 +2,9 @@ package com.cms.demo.controller;
 
 import com.cms.demo.model.User;
 import com.cms.demo.service.UserService;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,10 +20,22 @@ public class UserController {
         this.userService = userService;
     }
 
-
     @PostMapping("/create")
     public User createUser(@RequestBody User user) {
-        log.info("Received user: {}", user);
+        log.info("Received user Create: {}", user);
         return userService.addUser(user);
+    }
+
+    @GetMapping("/login")
+    public ResponseEntity<?> loginUser(@RequestBody User userRequest) {
+        log.info("Received user Login: {}", userRequest);
+        User user = userService.loginUser(userRequest);
+
+        if (user != null) {
+            return ResponseEntity.ok(user); // 200 OK with user data
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body("Invalid email or password");
+        }
     }
 }
