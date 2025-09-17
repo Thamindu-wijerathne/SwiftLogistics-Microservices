@@ -1,4 +1,4 @@
-package com.wms.demo;
+package com.ros.demo;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
