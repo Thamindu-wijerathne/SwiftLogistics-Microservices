@@ -32,7 +32,7 @@ public class DeliveryPackageController {
     @PostMapping("/updatePackageState")
     public ResponseEntity<String> updatePackage(@RequestBody UpdateStateDTO updateStateDTO){
               boolean state=  deliveryPackageService.updatePackage(updateStateDTO);
-              if(state==true){
+              if(state){
                   return ResponseEntity.status(200).body("Updated Successfully");
               }
               else {
