@@ -1,6 +1,7 @@
 package com.wms.demo.service;
 
 import com.wms.demo.dto.*;
+import com.wms.demo.kafka.DeliveredPkgProducer;
 import com.wms.demo.model.DeliveryPackage;
 import com.wms.demo.repo.DeliveryPackageRepo;
 import lombok.extern.slf4j.Slf4j;
@@ -19,6 +20,9 @@ public class DeliveryPackageService {
 
     @Autowired
     TCPService tcpService;
+
+    @Autowired
+    DeliveredPkgProducer deliveredPkgProducer;
 
     public String addPackage(String packageId){
         DeliveryPackage newPackage=new DeliveryPackage();
@@ -71,6 +75,12 @@ public class DeliveryPackageService {
                 if(updatedPackage.getId()!=null){
                     DeliveryPackageDTO deliveryPackageDTO=new DeliveryPackageDTO(packageId, updatedPackage.getStatus(), updatedPackage.getRemarks(), updatedPackage.getCreatedAt(),updatedPackage.getUpdatedAt());
                     tcpService.SendTCPMessage(deliveryPackageDTO); // sending the insertion to the clients and other services through the tcp connection
+                    if(
+                            state.equals("DELIVERED")
+                    ){
+//                        System.out.println("Inside");
+                        deliveredPkgProducer.SendMessage(packageId);
+                    }
                     return true;
 
                 }
