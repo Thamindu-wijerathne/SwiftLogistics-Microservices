@@ -28,7 +28,6 @@ public class TCPListnerService {
                 while (true) {
                     Socket clientSocket = serverSocket.accept();
                     new Thread(() -> handleClient(clientSocket)).start();
-
                 }
             } catch (Exception e) {
                 log.error("TCP Listener error: ", e);
