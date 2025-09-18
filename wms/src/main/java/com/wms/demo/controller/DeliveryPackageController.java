@@ -2,10 +2,13 @@ package com.wms.demo.controller;
 
 import com.wms.demo.dto.DeliveryPackageResponse;
 import com.wms.demo.dto.UpdateStateDTO;
+import com.wms.demo.model.DeliveryPackage;
 import com.wms.demo.service.DeliveryPackageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/wms/v1")
@@ -37,9 +40,10 @@ public class DeliveryPackageController {
               }
     }
 
-
-
-
+    @GetMapping("/getLoaded")
+    public List<DeliveryPackage> getLoaded(){
+        return deliveryPackageService.getLoadedPackages();
+    }
 
 
 }
