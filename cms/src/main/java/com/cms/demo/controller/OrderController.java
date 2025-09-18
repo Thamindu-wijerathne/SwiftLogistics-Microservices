@@ -44,4 +44,9 @@ public class OrderController {
         orderService.deleteOrder(id);
         return ResponseEntity.ok("Order deleted successfully");
     }
+
+    @PatchMapping("/complete/{id}")
+    public ResponseEntity<OrderDTO> completeOrder(@PathVariable Long id) {
+        return ResponseEntity.ok(orderService.compleOrder(id));
+    }
 }

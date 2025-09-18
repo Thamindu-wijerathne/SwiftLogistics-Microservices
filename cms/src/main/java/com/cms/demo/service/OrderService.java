@@ -7,6 +7,7 @@ import com.cms.demo.model.Order;
 import com.cms.demo.repo.ItemRepository;
 import com.cms.demo.repo.OrderRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -81,5 +82,16 @@ public class OrderService {
     // Delete Order
     public void deleteOrder(Long id) {
         orderRepository.deleteById(id);
+    }
+
+    public OrderDTO compleOrder(Long id) {
+        Order order = orderRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Order not found"));
+        order.setStatus("DELIVERED");
+
+        order = orderRepository.save(order);
+
+        return mapToDTO(order);
+
     }
 }
