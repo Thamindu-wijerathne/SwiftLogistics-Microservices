@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -22,7 +23,7 @@ public class DeliveryPackageService {
     public String addPackage(String packageId){
         DeliveryPackage newPackage=new DeliveryPackage();
         newPackage.setPackageId(packageId);
-        newPackage.setStatus("Received");
+        newPackage.setStatus("NOT_RECEIVED"); //package not yet received
         newPackage.setRemarks("Package received to the warehouse");
         newPackage.setCreatedAt(LocalDateTime.now());
         newPackage.setUpdatedAt(LocalDateTime.now());
@@ -84,6 +85,10 @@ public class DeliveryPackageService {
         else {
             return false;
         }
+    }
+
+    public List<DeliveryPackage> getLoadedPackages(){
+        return packageRepo.findByStatus("LOADED");
     }
 
 

@@ -17,7 +17,7 @@ public class DeliveryPackage {
 
     @Column(nullable = false,unique = true)
     private String packageId;
-    private String status; // RECEIVED, IN_WAREHOUSE, LOADED, DELIVERED , DELIVER_FAILED
+    private String status; // RECEIVED, IN_WAREHOUSE, LOADED, DELIVERED , NOT_DELIVERED
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private String remarks;
