@@ -33,7 +33,7 @@ public class Order {
     private String paymentMethod;       // e.g., card, cash-on-delivery
 
     // One order has one item
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "item_id", referencedColumnName = "id")
     private Item item;
 }

@@ -49,7 +49,7 @@ public class OrderService {
                 .orElseThrow(() -> new RuntimeException("Item not found"));
 
         Order order = Order.builder()
-                .status(orderDTO.getStatus())
+                .status("NOT_DELIVERED")
                 .address(orderDTO.getAddress())
                 .userId(orderDTO.getUserId())
                 .quantity(orderDTO.getQuantity())
