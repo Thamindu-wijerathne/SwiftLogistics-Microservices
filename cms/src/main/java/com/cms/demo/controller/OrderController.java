@@ -49,4 +49,9 @@ public class OrderController {
     public ResponseEntity<OrderDTO> completeOrder(@PathVariable Long id) {
         return ResponseEntity.ok(orderService.compleOrder(id));
     }
+
+    @GetMapping("/test")
+    public void test(){
+        orderService.getNotDeliveredAddresses();
+    }
 }

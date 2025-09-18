@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -94,4 +95,18 @@ public class OrderService {
         return mapToDTO(order);
 
     }
+
+    //get not delivered orders
+    public void getNotDeliveredAddresses(){
+
+        List<Object[]> addresses = orderRepository.findAddressAndOrderIdForNotDelivered();
+        for (Object[] row : addresses) {
+
+            Long itemId = (Long) row[0];
+            String address = (String) row[1];
+            System.out.println("Item ID: " + itemId + ", Address: " + address);
+        }
+        //todo : send this to the ros/optimize and get the response and forward it to the client.
+    }
+
 }
