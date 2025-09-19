@@ -8,9 +8,10 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class UserService {
+
     private final UserRepository userRepository;
 
-    public UserService(UserRepository userRepository) {
+    public UserService(JwtService jwtService, UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 
@@ -19,7 +20,13 @@ public class UserService {
     }
 
     public User loginUser(User user) {
-        return userRepository.findByEmailAndPassword(user.getEmail(), user.getPassword());
+        User requestedUser = userRepository.findByEmail(user.getEmail());
+
+        if (requestedUser != null && requestedUser.getPassword().equals(user.getPassword())) {
+            return requestedUser;
+        } else {
+            return null;
+        }
     }
 
 }
