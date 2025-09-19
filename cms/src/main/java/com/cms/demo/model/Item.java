@@ -23,4 +23,5 @@ public class Item {
     private String description;     // Optional description
     private Double price;           // Price per unit
     private String sku;             // Stock Keeping Unit (unique identifier)
+    private Integer stock;       // Available stock quantity
 }

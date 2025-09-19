@@ -7,6 +7,7 @@ import com.cms.demo.model.Order;
 import com.cms.demo.repo.ItemRepository;
 import com.cms.demo.repo.OrderRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +22,9 @@ public class OrderService {
 
     private final OrderRepository orderRepository;
     private final ItemRepository itemRepository;
+
+    @Autowired
+    private ItemService itemService;
 
     // Convert Entity -> DTO
     private OrderDTO mapToDTO(Order order) {
@@ -41,6 +45,7 @@ public class OrderService {
                                 .description(order.getItem().getDescription())
                                 .price(order.getItem().getPrice())
                                 .sku(order.getItem().getSku())
+                                .stock(order.getItem().getStock())
                                 .build() : null)
                 .build();
     }
@@ -49,6 +54,9 @@ public class OrderService {
     public OrderDTO createOrder(OrderDTO orderDTO) {
         Item item = itemRepository.findById(orderDTO.getItem().getId())
                 .orElseThrow(() -> new RuntimeException("Item not found"));
+
+        // Decrease stock after order placed
+        itemService.decreaseStock(orderDTO.getItem().getId(), orderDTO.getQuantity());
 
         Order order = Order.builder()
                 .status("NOT_DELIVERED")
