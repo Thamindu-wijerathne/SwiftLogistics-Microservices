@@ -3,6 +3,7 @@ package com.cms.demo.service;
 
 import com.cms.demo.dto.ItemDTO;
 import com.cms.demo.dto.OrderDTO;
+import com.cms.demo.kafka.DeliveryPackageProducer;
 import com.cms.demo.model.Item;
 import com.cms.demo.model.Order;
 import com.cms.demo.repo.ItemRepository;
@@ -12,6 +13,7 @@ import com.common.demo.dto.RouteRequestDTO;
 import com.common.demo.dto.RouteResponseDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -22,11 +24,14 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-@Slf4j
+//@Slf4j
 @Service
 
 public class OrderService {
     private final WebClient webClient;
+
+    @Autowired
+    DeliveryPackageProducer deliveryPackageProducer;
 
     private final OrderRepository orderRepository;
     private final ItemRepository itemRepository;
@@ -77,7 +82,9 @@ public class OrderService {
                 .item(item)
                 .build();
 
-        return mapToDTO(orderRepository.save(order));
+        Order savedOrder = orderRepository.save(order);
+        deliveryPackageProducer.SendMessageOnCreateOrder(savedOrder.getId().toString());
+        return mapToDTO(savedOrder);
     }
 
     // Get all Orders
@@ -116,7 +123,7 @@ public class OrderService {
 
         List<Object[]> addresses = orderRepository.findAddressAndOrderIdForNotDelivered();
         if (addresses == null || addresses.isEmpty()) {
-            log.warn("No not-delivered orders found.");
+//            log.warn("No not-delivered orders found.");
             return null;
         }
         List<DeliveryDTO> deliveryDTOList = new ArrayList<>();
@@ -149,7 +156,7 @@ public class OrderService {
             return response;
         }
         catch (Exception e){
-            log.error("ERROR",e);
+//            log.error("ERROR",e);
             return null;
         }
     }
