@@ -1,6 +1,7 @@
 package com.cms.demo.controller;
 
 import com.cms.demo.dto.OrderDTO;
+import com.cms.demo.model.Order;
 import com.cms.demo.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,5 +54,10 @@ public class OrderController {
     @GetMapping("/test")
     public void test(){
         orderService.getNotDeliveredAddresses();
+    }
+
+    @GetMapping("/getOrders/{userid}")
+    public List<Order> getOrders(@PathVariable("userid") String id){
+        return orderService.getOrdersByUserId(id);
     }
 }

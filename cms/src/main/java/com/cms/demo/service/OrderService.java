@@ -109,4 +109,8 @@ public class OrderService {
         //todo : send this to the ros/optimize and get the response and forward it to the client.
     }
 
+    // Get orders by user
+    public List<Order> getOrdersByUserId(String id) {
+        return orderRepository.getOrdersByUserId(id);
+    }
 }
