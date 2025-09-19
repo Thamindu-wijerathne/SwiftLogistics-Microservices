@@ -11,14 +11,16 @@ public class UserDTO {
     private final String password;
     private final String email;
     private final String gender;
+    private final String role;
 
     // Constructor
-    public UserDTO(Long id, String email, String name, String password, String gender) {
+    public UserDTO(Long id, String email, String name, String password, String gender, String role) {
         this.id = id;
         this.email = email;
         this.name = name;
         this.password = password;
         this.gender = gender;
+        this.role = role;
         ;
     }
 }
