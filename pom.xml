@@ -19,6 +19,7 @@
     <module>ros</module>
     <module>wms</module>
     <module>Orchestrator</module>
+    <module>commondtos</module>
   </modules>
   <build>
     <plugins>

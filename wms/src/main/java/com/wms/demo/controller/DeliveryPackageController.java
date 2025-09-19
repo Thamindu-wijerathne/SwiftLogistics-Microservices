@@ -11,8 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/wms/v1")
-@CrossOrigin(origins = "*")  // allow all origins for this controller
+@RequestMapping("/v1")
 public class DeliveryPackageController {
 
     @Autowired

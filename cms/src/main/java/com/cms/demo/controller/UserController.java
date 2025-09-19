@@ -27,7 +27,7 @@ public class UserController {
         this.jwtService = jwtService;
     }
 
-    @PostMapping("/create")
+    @PostMapping("/register")
     public User createUser(@RequestBody User user) {
         log.info("Received user Create: {}", user);
         return userService.addUser(user);

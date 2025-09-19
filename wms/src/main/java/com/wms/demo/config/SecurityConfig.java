@@ -1,6 +1,6 @@
-package com.ros.demo.config;
+package com.wms.demo.config;
 
-import com.ros.demo.filter.GatewayFilter;
+import com.wms.demo.filter.GatewayFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

@@ -35,6 +35,7 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(request -> request
+                        .requestMatchers("/api/routes/optimize").permitAll()
                         .anyRequest().authenticated())
                 .httpBasic(httpBasic -> httpBasic.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

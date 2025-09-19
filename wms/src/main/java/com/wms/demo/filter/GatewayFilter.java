@@ -1,6 +1,6 @@
-package com.ros.demo.filter;
+package com.wms.demo.filter;
 
-import com.ros.demo.config.GatewayPublicKeyManager;
+import com.wms.demo.config.GatewayPublicKeyManager;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -124,4 +124,3 @@ public class GatewayFilter extends OncePerRequestFilter {
         response.getWriter().write("{\"message\": \"" + message + "\"}");
     }
 }
-

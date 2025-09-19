@@ -1,4 +1,4 @@
-package com.ros.demo.config;
+package com.wms.demo.config;
 
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;

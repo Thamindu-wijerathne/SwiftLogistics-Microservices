@@ -40,7 +40,7 @@ public class GatewayFilter extends OncePerRequestFilter {
         String path = request.getServletPath();
         System.out.println(path);
         // Skip validation for public endpoints
-        if ( path.equals("/users/login")) {
+        if ( path.equals("/users/login") || path.equals("/users/register")) {
             System.out.println("howwwwwwwwwwwwwwww");
             filterChain.doFilter(request, response);
             return;
