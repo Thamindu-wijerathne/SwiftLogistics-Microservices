@@ -1,6 +1,7 @@
 package com.cms.demo.controller;
 
 import com.cms.demo.dto.OrderDTO;
+import com.cms.demo.model.Order;
 import com.cms.demo.service.OrderService;
 import com.common.demo.dto.RouteResponseDTO;
 import lombok.RequiredArgsConstructor;
@@ -54,5 +55,10 @@ public class OrderController {
     @GetMapping("/getDeliveryAddresses")
     public ResponseEntity<RouteResponseDTO> getDeliveryAddresses(){
         return ResponseEntity.ok(orderService.getNotDeliveredAddresses());
+    }
+
+    @GetMapping("/getOrders/{userid}")
+    public List<Order> getOrders(@PathVariable("userid") String id){
+        return orderService.getOrdersByUserId(id);
     }
 }

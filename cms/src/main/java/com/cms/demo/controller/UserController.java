@@ -53,6 +53,7 @@ public class UserController {
             response.put("message", "Login successful");
             response.put("role", user.getRole());
             response.put("email", user.getEmail()); // or getUsername() depending on your entity
+            response.put("id", user.getId().toString());
 
             return ResponseEntity.ok(response);
 

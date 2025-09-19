@@ -154,4 +154,8 @@ public class OrderService {
         }
     }
 
+    // Get orders by user
+    public List<Order> getOrdersByUserId(String id) {
+        return orderRepository.getOrdersByUserId(id);
+    }
 }
