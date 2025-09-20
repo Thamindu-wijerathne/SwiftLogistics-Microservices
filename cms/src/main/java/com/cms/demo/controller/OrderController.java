@@ -1,7 +1,9 @@
 package com.cms.demo.controller;
 
 import com.cms.demo.dto.OrderDTO;
+import com.cms.demo.model.Order;
 import com.cms.demo.service.OrderService;
+import com.common.demo.dto.RouteResponseDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +25,7 @@ public class OrderController {
     // Create Order
     @PostMapping
     public ResponseEntity<OrderDTO> createOrder(@RequestBody OrderDTO orderDTO) {
+
         return ResponseEntity.ok(orderService.createOrder(orderDTO));
     }
 
@@ -50,8 +53,13 @@ public class OrderController {
         return ResponseEntity.ok(orderService.compleOrder(id));
     }
 
-    @GetMapping("/test")
-    public void test(){
-        orderService.getNotDeliveredAddresses();
+    @GetMapping("/getDeliveryAddresses")
+    public ResponseEntity<RouteResponseDTO> getDeliveryAddresses(){
+        return ResponseEntity.ok(orderService.getNotDeliveredAddresses());
+    }
+
+    @GetMapping("/getOrders/{userid}")
+    public List<Order> getOrders(@PathVariable("userid") String id){
+        return orderService.getOrdersByUserId(id);
     }
 }

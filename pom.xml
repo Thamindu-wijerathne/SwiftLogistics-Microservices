@@ -15,6 +15,7 @@
   <name>Archetype - swiftlogistics</name>
   <url>http://maven.apache.org</url>
   <modules>
+    <module>commondtos</module>
     <module>cms</module>
     <module>ros</module>
     <module>wms</module>

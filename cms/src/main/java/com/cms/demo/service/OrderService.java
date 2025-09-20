@@ -1,30 +1,53 @@
 package com.cms.demo.service;
 
 
+import com.cms.demo.dto.ItemDTO;
 import com.cms.demo.dto.OrderDTO;
+import com.cms.demo.kafka.DeliveryPackageProducer;
 import com.cms.demo.model.Item;
 import com.cms.demo.model.Order;
 import com.cms.demo.repo.ItemRepository;
 import com.cms.demo.repo.OrderRepository;
+import com.common.demo.dto.DeliveryDTO;
+import com.common.demo.dto.RouteRequestDTO;
+import com.common.demo.dto.RouteResponseDTO;
 import lombok.RequiredArgsConstructor;
+
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.WebClient;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+//@Slf4j
 @Service
-@RequiredArgsConstructor
+
 public class OrderService {
+    private final WebClient webClient;
+
+    @Autowired
+    DeliveryPackageProducer deliveryPackageProducer;
 
     private final OrderRepository orderRepository;
     private final ItemRepository itemRepository;
 
+
     @Autowired
     private ItemService itemService;
+
+    public OrderService(WebClient.Builder webClientBuilder, OrderRepository orderRepository, ItemRepository itemRepository) {
+        this.webClient = webClientBuilder.baseUrl("http://localhost:8082/api/routes").build();
+        this.orderRepository = orderRepository;
+        this.itemRepository = itemRepository;
+    }
+
 
     // Convert Entity -> DTO
     private OrderDTO mapToDTO(Order order) {
@@ -39,7 +62,7 @@ public class OrderService {
                 .orderDate(order.getOrderDate())
                 .paymentMethod(order.getPaymentMethod())
                 .item(order.getItem() != null ?
-                        com.cms.demo.dto.ItemDTO.builder()
+                        ItemDTO.builder()
                                 .id(order.getItem().getId())
                                 .name(order.getItem().getName())
                                 .description(order.getItem().getDescription())
@@ -70,7 +93,9 @@ public class OrderService {
                 .item(item)
                 .build();
 
-        return mapToDTO(orderRepository.save(order));
+        Order savedOrder = orderRepository.save(order);
+        deliveryPackageProducer.SendMessageOnCreateOrder(savedOrder.getId().toString());
+        return mapToDTO(savedOrder);
     }
 
     // Get all Orders
@@ -105,16 +130,50 @@ public class OrderService {
     }
 
     //get not delivered orders
-    public void getNotDeliveredAddresses(){
+    public RouteResponseDTO getNotDeliveredAddresses(){
 
         List<Object[]> addresses = orderRepository.findAddressAndOrderIdForNotDelivered();
+        if (addresses == null || addresses.isEmpty()) {
+//            log.warn("No not-delivered orders found.");
+            return null;
+        }
+        List<DeliveryDTO> deliveryDTOList = new ArrayList<>();
         for (Object[] row : addresses) {
 
             Long itemId = (Long) row[0];
             String address = (String) row[1];
-            System.out.println("Item ID: " + itemId + ", Address: " + address);
+            DeliveryDTO deliveryDTO = new DeliveryDTO();
+            deliveryDTO.setPackageId(String.valueOf(itemId));
+            deliveryDTO.setAddress(address);
+
+            deliveryDTOList.add(deliveryDTO);
+
         }
-        //todo : send this to the ros/optimize and get the response and forward it to the client.
+        DeliveryDTO[] deliveryArray = deliveryDTOList.toArray(new DeliveryDTO[0]);
+        RouteRequestDTO routeRequestDTO=new RouteRequestDTO();
+        routeRequestDTO.setVehicleId("SWIFT_VEHICLE");
+        routeRequestDTO.setDriverId("SWIFT_DRIVER");
+        routeRequestDTO.setDeliveries(deliveryArray);
+        System.out.println(routeRequestDTO);
+
+        try{
+            RouteResponseDTO response=webClient.post()
+                    .uri("/optimize")
+                    .bodyValue(routeRequestDTO)
+                    .retrieve()
+                    .bodyToMono(RouteResponseDTO.class)
+                    .block();
+
+            return response;
+        }
+        catch (Exception e){
+//            log.error("ERROR",e);
+            return null;
+        }
     }
 
+    // Get orders by user
+    public List<Order> getOrdersByUserId(String id) {
+        return orderRepository.getOrdersByUserId(id);
+    }
 }
