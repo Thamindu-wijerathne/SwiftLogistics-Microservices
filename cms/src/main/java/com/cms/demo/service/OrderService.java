@@ -12,7 +12,9 @@ import com.common.demo.dto.DeliveryDTO;
 import com.common.demo.dto.RouteRequestDTO;
 import com.common.demo.dto.RouteResponseDTO;
 import lombok.RequiredArgsConstructor;
+
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -36,11 +38,16 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final ItemRepository itemRepository;
 
+
+    @Autowired
+    private ItemService itemService;
+
     public OrderService(WebClient.Builder webClientBuilder, OrderRepository orderRepository, ItemRepository itemRepository) {
         this.webClient = webClientBuilder.baseUrl("http://localhost:8082/api/routes").build();
         this.orderRepository = orderRepository;
         this.itemRepository = itemRepository;
     }
+
 
     // Convert Entity -> DTO
     private OrderDTO mapToDTO(Order order) {
@@ -61,6 +68,7 @@ public class OrderService {
                                 .description(order.getItem().getDescription())
                                 .price(order.getItem().getPrice())
                                 .sku(order.getItem().getSku())
+                                .stock(order.getItem().getStock())
                                 .build() : null)
                 .build();
     }
@@ -69,6 +77,9 @@ public class OrderService {
     public OrderDTO createOrder(OrderDTO orderDTO) {
         Item item = itemRepository.findById(orderDTO.getItem().getId())
                 .orElseThrow(() -> new RuntimeException("Item not found"));
+
+        // Decrease stock after order placed
+        itemService.decreaseStock(orderDTO.getItem().getId(), orderDTO.getQuantity());
 
         Order order = Order.builder()
                 .status("NOT_DELIVERED")
