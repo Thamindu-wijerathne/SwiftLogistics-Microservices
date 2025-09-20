@@ -97,10 +97,9 @@ public class DeliveryPackageService {
         }
     }
 
-    public List<DeliveryPackage> getLoadedPackages(){
-        return packageRepo.findByStatus("LOADED");
+    public List<DeliveryPackage> getAll(){
+        return packageRepo.findAll();
     }
-
 
 
 }

@@ -39,10 +39,12 @@ public class DeliveryPackageController {
               }
     }
 
-    @GetMapping("/getLoaded")
-    public List<DeliveryPackage> getLoaded(){
-        return deliveryPackageService.getLoadedPackages();
+    @GetMapping("/GetAll")
+    public ResponseEntity<List<DeliveryPackage>> getall(){
+        return ResponseEntity.status(200).body(deliveryPackageService.getAll());
     }
+
+
 
 
 }
